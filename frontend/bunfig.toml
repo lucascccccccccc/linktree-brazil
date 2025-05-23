@@ -1,0 +1,13 @@
+[install]
+# Use the exact versions specified in package.json
+exact = true
+
+# Install peer dependencies automatically
+peer = true
+
+# Use the Node.js resolution algorithm
+node-resolution = true
+
+[test]
+# Use the default test configuration
+coverage = true
