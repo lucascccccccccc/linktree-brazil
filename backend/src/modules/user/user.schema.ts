@@ -14,5 +14,4 @@ export const UserLoginSchema = z.object({
     password: z.string().min(3).max(100),
 });
 
-
 export type UserInput = z.infer<typeof UserRegisterSchema>;

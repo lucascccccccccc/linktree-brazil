@@ -10,7 +10,7 @@ export const AuthService = {
             throw new Error("User not found");
         }
 
-        const checkPass = await Bun.password.verify(password, user.password);
+        const checkPass = await Bun.password.verify(password, user.password)
         if (!checkPass) {
             throw new Error("Invalid credentials");
         }
