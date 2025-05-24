@@ -46,4 +46,14 @@ export const UserRepository = {
                 }
             });
     },
+
+    async deleteUser(userId: string) {
+        await prisma.link.deleteMany({
+            where: { userId }
+        });
+
+        return prisma.user.delete({
+            where: { id: userId }
+        });
+    }
 }

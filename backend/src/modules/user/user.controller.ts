@@ -50,7 +50,7 @@ export const getUserByUsernameHandler = async (ctx: Context) => {
   try {
     const user = await UserService.getUserByUsername(username);
 
-    const { password, ...userWithoutPassword } = user;
+    const { password, email, createdAt, id, ...userWithoutPassword } = user;
     return userWithoutPassword;
   } catch (error: any) {
     if (error.message === "User not found") {
@@ -62,3 +62,29 @@ export const getUserByUsernameHandler = async (ctx: Context) => {
     return { error: error.message || 'Internal server error' };
   }
 };
+
+export const deleteUserHandler = async (ctx: Context) => {
+  const { set } = ctx;
+  const { userId } = ctx.params;
+
+  try {
+    const decodedUser = AuthService.verifyToken(ctx);
+
+    if (decodedUser.userId !== userId) {
+      set.status = 403;
+      return { error: "You are not authorized to delete this user" };
+    }
+
+    await UserService.deleteUser(userId);
+    return { message: "User deleted successfully" };
+
+  } catch (error: any) {
+    if (error.message === "User not found") {
+      set.status = 404;
+      return { error: "User not found" };
+    }
+
+    set.status = error.status || 500;
+    return { error: error.message || 'Internal server error' };
+  }
+}

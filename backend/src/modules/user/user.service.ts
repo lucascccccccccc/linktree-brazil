@@ -42,5 +42,14 @@ export const UserService = {
         }
 
         return user;
+    },
+
+    deleteUser: async (userId: string) => {
+        const user = await UserRepository.getUserById(userId);
+        if (!user) {
+            throw new Error("User not found");
+        }
+
+        return UserRepository.deleteUser(userId);
     }
 }

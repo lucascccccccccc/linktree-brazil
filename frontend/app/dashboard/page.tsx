@@ -15,7 +15,6 @@ import { LinkItem, LinkItemForm } from "@/components/link-item"
 import { Navigation } from "@/components/navigation"
 import Cookies from "js-cookie"
 import { jwtDecode } from "jwt-decode"
-import { set } from "date-fns"
 
 /*
 type User = {
@@ -50,6 +49,7 @@ export default function DashboardPage() {
   const [links, setLinks] = useState<LinkType[]>([])
   const [userId, setUserId] = useState("")
   const router = useRouter()
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const getLinksByUserId = async (userId: string, token: string) => {
     try {
@@ -94,7 +94,7 @@ export default function DashboardPage() {
       setUserId(decoded.userId);
       getLinksByUserId(decoded.userId, token);
       // getLinksByUserId(decoded.userId);
-      console.log("Bem vindo, " + decoded.userId);
+      // console.log("Bem vindo, " + decoded.userId);
       return;
     } catch (err) {
       Cookies.remove("token");
@@ -107,17 +107,31 @@ export default function DashboardPage() {
   }
 
   const handleCreateLink = async (link: { userId: string, title: string; url: string; description?: string }) => {
+    const token = Cookies.get("token");
+
+    if (!token) {
+      router.push("/login");
+      return;
+    }
+
     try {
       const response = await fetch("http://localhost:3001/api/links", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+
         body: JSON.stringify(link),
       });
 
       if (!response.ok) {
-        alert("Erro ao criar link.");
+        alert("Erro inesperado ao criar link.");
+        Cookies.remove("token");
+        router.push("/login");
         return;
       }
+
       const data = await response.json();
       setLinks([...links, data]);
     } catch (err) {
@@ -131,6 +145,46 @@ export default function DashboardPage() {
 
   const handleSaveChanges = async () => {
     alert("Changes saved successfully!")
+  }
+
+  const handleDeleteUser = async () => {
+    const token = Cookies.get("token");
+
+    if (!token) {
+      router.push("/login");
+      return;
+
+    }
+
+    const confirm = window.confirm("Are you sure you want to delete your account?");
+    if (!confirm) {
+      setIsDeleting(false);
+      return;
+    }
+
+    try {
+      const response = await fetch(`http://localhost:3001/api/users/${userId}`, {
+        method: "DELETE",
+        headers: {
+          "Authorization": `Bearer ${token}`
+        },
+      })
+
+      if (!response.ok) {
+        alert("Erro ao deletar o usuário.");
+        return;
+      }
+
+      setIsDeleting(true);
+      Cookies.remove("token");
+      setTimeout(() => {
+        router.push("/login");
+      }, 2000);
+
+    } catch (err) {
+      alert("Erro ao deletar o usuário: " + err);
+      setIsDeleting(false);
+    }
   }
 
   return (
@@ -231,6 +285,11 @@ export default function DashboardPage() {
             <CardFooter>
               <Button className="w-full" onClick={handleSaveChanges}>
                 Save Changes
+              </Button>
+            </CardFooter>
+            <CardFooter>
+              <Button disabled={isDeleting} className="w-full bg-red-500 hover:bg-red-600" onClick={handleDeleteUser}>
+                {isDeleting ? "Deleting..." : "Delete Account"}
               </Button>
             </CardFooter>
           </Card>
