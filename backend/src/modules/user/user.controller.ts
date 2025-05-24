@@ -48,13 +48,7 @@ export const getUserByUsernameHandler = async (ctx: Context) => {
   const { username } = ctx.params;
 
   try {
-    const decodedUser = AuthService.verifyToken(ctx);
     const user = await UserService.getUserByUsername(username);
-
-    if (decodedUser.userId !== user.id) {
-      set.status = 403;
-      return { error: "You are not authorized to access this user" };
-    }
 
     const { password, ...userWithoutPassword } = user;
     return userWithoutPassword;

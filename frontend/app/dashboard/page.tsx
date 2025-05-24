@@ -49,9 +49,6 @@ export default function DashboardPage() {
   const [user, setUser] = useState<JwtPayload | null>(null);
   const [links, setLinks] = useState<LinkType[]>([])
   const [userId, setUserId] = useState("")
-  const [title, setTitle] = useState("")
-  const [url, setUrl] = useState("")
-  const [description, setDescription] = useState("")
   const router = useRouter()
 
   const getLinksByUserId = async (userId: string, token: string) => {
