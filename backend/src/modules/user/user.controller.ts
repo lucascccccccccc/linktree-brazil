@@ -52,7 +52,13 @@ export const getUserByUsernameHandler = async (ctx: Context) => {
     const user = await UserService.getUserByUsername(username);
 
     const { password, email, createdAt, id, ...userWithoutPassword } = user;
-    return userWithoutPassword;
+
+    const links = user.links.map((link) => {
+      const { userId, createdAt, updatedAt, ...linkWithoutUserId } = link;
+      return linkWithoutUserId;
+    });
+
+    return { ...userWithoutPassword, links };
   } catch (error: any) {
     if (error.message === "User not found") {
       set.status = 404;

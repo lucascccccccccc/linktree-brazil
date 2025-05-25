@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { HomeButton, Navigation } from "@/components/navigation"
+import { PanelForUserProfilePage, Navigation } from "@/components/navigation"
 import { UserProfile } from "@/components/user-profile"
 import axios from "axios"
 import { useParams } from "next/navigation"
@@ -59,7 +59,7 @@ export default function UserPage() {
 
   return (
     <>
-      <HomeButton />
+      <PanelForUserProfilePage />
       <UserProfile user={profile} links={links} />
     </>
   )

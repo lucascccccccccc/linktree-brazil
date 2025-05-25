@@ -12,7 +12,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { LinkItem, LinkItemForm } from "@/components/link-item"
-import { Navigation } from "@/components/navigation"
+import { Navigation, PanelForDashboardPage } from "@/components/navigation"
 import Cookies from "js-cookie"
 import { jwtDecode } from "jwt-decode"
 
@@ -202,7 +202,6 @@ export default function DashboardPage() {
 
   const handleDeleteUser = async () => {
     const token = Cookies.get("token");
-
     if (!token) {
       router.push("/login");
       return;
@@ -242,7 +241,7 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-zinc-50">
-      <Navigation />
+      <PanelForDashboardPage />
       <main className="container mx-auto max-w-4xl p-4 py-8">
         <div className="mb-8 flex items-center justify-between">
           <div>
