@@ -50,7 +50,7 @@ export function UserProfile({ user, links }: UserProfileProps) {
             </div>
           )}
           <div>
-            <h1 className="text-2xl font-bold">{user.name}!!!</h1>
+            <h1 className="text-2xl font-bold">{user.name}</h1>
             <p className="text-zinc-500">@{user.username}</p>
             {user.description && <p className="mt-2 text-sm text-zinc-600">{user.description}</p>}
           </div>
@@ -75,7 +75,7 @@ export function UserProfile({ user, links }: UserProfileProps) {
           )}
         </div>
 
-        <div className="pt-8 text-center text-sm text-zinc-500">
+        <div className="pt-8 text-center text-sm text-zinc-500 ">
           <p>
             Powered by{" "}
             <Link href="/" className="font-medium hover:underline">

@@ -29,6 +29,6 @@ const app = new Elysia()
 
 app.listen(3001, () => {
   console.log(
-    `🦊 Elysia is running at http://${app.server?.hostname}:${app.server?.port}`,
+    `🦊 Elysia is running at http://${app.server?.hostname}:${app.server?.port}\n📖 Swagger available at http://${app.server?.hostname}:${app.server?.port}/swagger`,
   );
 });
