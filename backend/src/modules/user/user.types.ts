@@ -7,6 +7,13 @@ export type UserInput = {
     description?: string;
 }
 
+export interface UserUpdateInput {
+    username: string;
+    name: string;
+    photo: string;
+    description: string;
+}
+
 export type User = {
     id: string;
     name: string;

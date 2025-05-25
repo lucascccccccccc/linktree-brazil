@@ -1,5 +1,7 @@
 import { UserRepository } from "./user.repository";
-import { UserInput } from "./user.types";
+import { UserInput, UserUpdateInput } from "./user.types";
+import jwt from "jsonwebtoken";
+
 
 export const UserService = {
 
@@ -51,5 +53,39 @@ export const UserService = {
         }
 
         return UserRepository.deleteUser(userId);
+    },
+
+
+    /*
+    updateUser: async (userId: string, data: UserUpdateInput) => {
+        const user = await UserRepository.getUserById(userId);
+        if (!user) {
+            throw new Error("User not found");
+        }
+
+        return UserRepository.updateUser(userId, data);
+    }
+        */
+
+    updateUser: async (userId: string, data: UserUpdateInput) => {
+        const user = await UserRepository.getUserById(userId);
+        if (!user) {
+            throw new Error("User not found");
+        }
+
+        const updatedUser = await UserRepository.updateUser(userId, data);
+        const token = jwt.sign({
+            userId: updatedUser.id,
+            email: updatedUser.email,
+            name: updatedUser.name,
+            photo: updatedUser.photo,
+            description: updatedUser.description,
+            username: updatedUser.username,
+        }, process.env.JWT_SECRET || "cmakqgf8r0000u2xs36et8jhe", {
+            expiresIn: "1h",
+        });
+
+        const { password, ...userWithoutPassword } = updatedUser;
+        return { user: userWithoutPassword, token };
     }
 }

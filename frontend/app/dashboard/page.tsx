@@ -40,16 +40,22 @@ interface JwtPayload {
   username: string;
   email: string;
   exp?: number;
-  description?: string
+  description: string
   photo: string
 }
 
 export default function DashboardPage() {
   const [user, setUser] = useState<JwtPayload | null>(null);
-  const [links, setLinks] = useState<LinkType[]>([])
-  const [userId, setUserId] = useState("")
-  const router = useRouter()
+  const [links, setLinks] = useState<LinkType[]>([]);
+  const [userId, setUserId] = useState("");
+  const [name, setName] = useState("");
+  const [username, setUsername] = useState("");
+  const [photo, setPhoto] = useState("");
+  const [description, setDescription] = useState("");
+  const router = useRouter();
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
+  // const [error, setError] = useState("");
 
   const getLinksByUserId = async (userId: string, token: string) => {
     try {
@@ -82,6 +88,7 @@ export default function DashboardPage() {
     }
 
     try {
+
       const decoded = jwtDecode<JwtPayload>(token);
       if (decoded.exp && decoded.exp * 1000 < Date.now()) {
         // alert("Sua sessão expirou. Por favor, faça login novamente.");
@@ -90,12 +97,13 @@ export default function DashboardPage() {
         return;
       }
 
-      setUser(decoded);
+      setUser(decoded)
       setUserId(decoded.userId);
+      setName(decoded.name);
+      setUsername(decoded.username);
+      setPhoto(decoded.photo);
+      setDescription(decoded.description);
       getLinksByUserId(decoded.userId, token);
-      // getLinksByUserId(decoded.userId);
-      // console.log("Bem vindo, " + decoded.userId);
-      return;
     } catch (err) {
       Cookies.remove("token");
       router.push("/login");
@@ -105,6 +113,7 @@ export default function DashboardPage() {
   if (!user) {
     return <p className="text-center mt-20">Carregando dados do usuário...</p>;
   }
+
 
   const handleCreateLink = async (link: { userId: string, title: string; url: string; description?: string }) => {
     const token = Cookies.get("token");
@@ -143,9 +152,53 @@ export default function DashboardPage() {
     setLinks(links.filter((link) => link.id !== id))
   }
 
+
   const handleSaveChanges = async () => {
-    alert("Changes saved successfully!")
-  }
+    const token = Cookies.get("token");
+
+    if (!token) {
+      router.push("/login");
+      return;
+    }
+
+    setIsUpdating(true);
+
+    try {
+      const response = await fetch(`http://localhost:3001/api/users/${userId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          photo,
+          name,
+          username,
+          description
+        })
+      });
+
+      if (!response.ok) {
+        alert("username already exists");
+        setUsername(user.username);
+        // setError("username already exists");
+        setIsUpdating(false);
+        return;
+      }
+
+      const data = await response.json();
+      // alert(data.message + data.user.token);
+      Cookies.set("token", data.user.token);
+      setUser(data.user.user);
+      setTimeout(() => {
+        setIsUpdating(false);
+      }, 1500);
+    } catch (err) {
+      console.error("Erro ao atualizar o usuário:", err);
+      setIsUpdating(false);
+    }
+  };
+
 
   const handleDeleteUser = async () => {
     const token = Cookies.get("token");
@@ -237,7 +290,6 @@ export default function DashboardPage() {
             <CardContent className="space-y-6">
               <div className="flex flex-col items-center space-y-4">
 
-
                 <div className="relative">
                   <img
                     src={user.photo}
@@ -250,41 +302,41 @@ export default function DashboardPage() {
                   <Label htmlFor="photo">Profile Photo URL</Label>
                   <div className="flex gap-2">
                     <div className="relative flex-1">
-                      <Input
-                        id="photo"
-                        placeholder="https://example.com/photo.jpg"
-                        defaultValue={user?.photo}
-                      />
+                      <Input id="photo" value={photo} onChange={(e) => setPhoto(e.target.value)} placeholder="https://example.com/photo.jpg" />
                     </div>
                   </div>
                 </div>
               </div>
 
+
               <div className="space-y-2">
                 <Label htmlFor="name">Name</Label>
-                <Input id="name" defaultValue={user?.name} />
+                <Input id="name" value={name} onChange={(e) => setName(e.target.value)} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="username">Username</Label>
-                <Input id="username" defaultValue={user?.username} />
+                <Input id="username" value={username} onChange={(e) => setUsername(e.target.value)} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
-                <Input id="email" type="email" defaultValue={user?.email} />
+                <Input disabled id="email" type="email" value={user?.email} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="description">Bio</Label>
                 <Textarea
                   id="description"
-                  placeholder="Tell visitors about yourself"
-                  defaultValue={user?.description}
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
                   rows={3}
                 />
               </div>
+
+              {/* {name} {username} {photo} {description} */}
+
             </CardContent>
             <CardFooter>
-              <Button className="w-full" onClick={handleSaveChanges}>
-                Save Changes
+              <Button disabled={isUpdating} className="w-full" onClick={handleSaveChanges}>
+                {isUpdating ? "Saving..." : "Save Changes"}
               </Button>
             </CardFooter>
             <CardFooter>

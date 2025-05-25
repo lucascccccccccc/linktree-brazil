@@ -1,5 +1,5 @@
 import { prisma } from '../../database/database';
-import { UserInput } from './user.types';
+import { UserInput, UserUpdateInput } from './user.types';
 
 export const UserRepository = {
 
@@ -54,6 +54,13 @@ export const UserRepository = {
 
         return prisma.user.delete({
             where: { id: userId }
+        });
+    },
+
+    async updateUser(userId: string, data: UserUpdateInput) {
+        return prisma.user.update({
+            where: { id: userId },
+            data,
         });
     }
 }
