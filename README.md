@@ -90,11 +90,11 @@ The app features a backend API documented via **Swagger** and a frontend built w
 
 Here are some screenshots of the application:
 
-- ![Screenshot 1](https://github.com/user-attachments/assets/9046a68d-650e-4dee-833c-6b4a8140dc70)
-- ![Screenshot 2](https://github.com/user-attachments/assets/b6465621-2219-4912-b4bc-650a04af609b)
-- ![Screenshot 3](https://github.com/user-attachments/assets/07574fe8-0de5-4169-8a9c-776990288a3b)
-- ![Screenshot 4](https://github.com/user-attachments/assets/88d9fd78-f63b-4997-9108-45b904a364bf)
-- ![Screenshot 5](https://github.com/user-attachments/assets/3d34d1db-3f1b-4446-be8d-3503f53fd218)
+![Screenshot 1](https://github.com/user-attachments/assets/9046a68d-650e-4dee-833c-6b4a8140dc70)
+![Screenshot 2](https://github.com/user-attachments/assets/b6465621-2219-4912-b4bc-650a04af609b)
+![Screenshot 3](https://github.com/user-attachments/assets/07574fe8-0de5-4169-8a9c-776990288a3b)
+![Screenshot 4](https://github.com/user-attachments/assets/88d9fd78-f63b-4997-9108-45b904a364bf)
+![Screenshot 5](https://github.com/user-attachments/assets/3d34d1db-3f1b-4446-be8d-3503f53fd218)
 
 
 
